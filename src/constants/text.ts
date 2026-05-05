@@ -12,7 +12,7 @@ export const TEXT_PATH_MAP = {
     isShowHome: true,
   },
   '/page1/game1': {
-    title: 'フラッシュ歌詞',
+    title: 'フラッシュ歌詞(試作)',
     isShowHome: false,
   },
 } as const;

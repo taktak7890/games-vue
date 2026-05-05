@@ -81,6 +81,12 @@ const reload = () => {
         {{ str === "" ? "読み込み中" : "START" }}
       </button>
     </div>
+    <div class="p-2 flex flex-col">
+      <span class="text-14px underline underline-offset-4">遊び方</span>
+      <div class="text-16px">
+        <span>STARTを押すと歌詞が一文字ずつ高速で出るぞ！何の歌か当てよう！</span>
+      </div>
+    </div>
     <div class="absolute bottom-20 w-full flex justify-center">
       <button @click="reload">RELOAD</button>
     </div>
