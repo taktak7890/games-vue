@@ -15,8 +15,8 @@ export const TEXT_PATH_MAP = {
     title: 'フラッシュ歌詞',
     isShowHome: false,
   },
-} as const
+} as const;
 
 export const getPathText = (path: string) => {
-  return TEXT_PATH_MAP[path as keyof typeof TEXT_PATH_MAP]?.title || ''
-}
+  return TEXT_PATH_MAP[path as keyof typeof TEXT_PATH_MAP]?.title || '';
+};

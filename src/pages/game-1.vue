@@ -1,51 +1,51 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref } from 'vue';
 
-const str = '月の欠片を集めて夢を飾り眠る時の砂散りばめてもあの頃へ還れない'
-const count = ref<number>(-1)
-const readyCount = ref<number>(0)
-const isReadyTime = ref<boolean>(false)
-const isRunning = ref<boolean>(false)
+const str = '月の欠片を集めて夢を飾り眠る時の砂散りばめてもあの頃へ還れない';
+const count = ref<number>(-1);
+const readyCount = ref<number>(0);
+const isReadyTime = ref<boolean>(false);
+const isRunning = ref<boolean>(false);
 
 const start = async () => {
-  if (isRunning.value) return
+  if (isRunning.value) return;
 
-  isRunning.value = true
-  readyCount.value = 3
-  isReadyTime.value = true
+  isRunning.value = true;
+  readyCount.value = 3;
+  isReadyTime.value = true;
 
   // 開始前カウントダウン
   await new Promise<void>((resolve) => {
-    readyCount.value = 3
+    readyCount.value = 3;
     const readyTimer = setInterval(() => {
-      readyCount.value--
+      readyCount.value--;
       if (readyCount.value <= 0) {
-        clearInterval(readyTimer)
-        resolve()
+        clearInterval(readyTimer);
+        resolve();
       }
-    }, 1000)
-  })
-  isReadyTime.value = false
+    }, 1000);
+  });
+  isReadyTime.value = false;
 
   // 文字を1文字ずつ表示する
   await new Promise<void>((resolve) => {
     const timerId = setInterval(() => {
-      count.value++
+      count.value++;
       if (count.value >= str.length) {
-        clearInterval(timerId)
-        resolve()
+        clearInterval(timerId);
+        resolve();
       }
-    }, 30)
-  })
+    }, 30);
+  });
 
-  isReadyTime.value = false
-  isRunning.value = false
-  count.value = -1
-}
+  isReadyTime.value = false;
+  isRunning.value = false;
+  count.value = -1;
+};
 
 const reload = () => {
-  window.location.reload()
-}
+  window.location.reload();
+};
 </script>
 
 <template>
