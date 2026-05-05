@@ -13,6 +13,11 @@ const router = createRouter({
       name: 'game1',
       component: () => import('../pages/game-1.vue'),
     },
+    {
+      path: '/setting',
+      name: 'setting',
+      component: () => import('../pages/setting-page.vue'),
+    },
   ],
 });
 
