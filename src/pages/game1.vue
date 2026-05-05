@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
-let debug = "start"
 const str = "月の欠片を集めて夢を飾り眠る時の砂散りばめてもあの頃へ還れない"
 const count = ref<number>(-1);
 const readyCount = ref<number>(0);
@@ -17,7 +16,6 @@ const start = async () => {
   readyCount.value = 3;
   isReadyTime.value = true;
   
-  debug = "count down"
   // 開始前カウントダウン
   await new Promise<void>((resolve) => {
     readyCount.value = 3;
@@ -31,7 +29,6 @@ const start = async () => {
   })
   isReadyTime.value = false;
 
-  debug = "main"
   // 文字を1文字ずつ表示する
   await new Promise<void>((resolve) => {
     const timerId = setInterval(() => {
@@ -46,8 +43,6 @@ const start = async () => {
   isReadyTime.value = false;
   isRunning.value = false;
   count.value = -1;
-  
-  debug = "finish"
 }
 
 const reload = () => {
