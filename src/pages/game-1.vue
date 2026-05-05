@@ -1,54 +1,51 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref } from 'vue'
 
-const str = "月の欠片を集めて夢を飾り眠る時の砂散りばめてもあの頃へ還れない"
-const count = ref<number>(-1);
-const readyCount = ref<number>(0);
-const isReadyTime = ref<boolean>(false);
-const isRunning = ref<boolean>(false);
-
-const timerId = ref<number>(0);
+const str = '月の欠片を集めて夢を飾り眠る時の砂散りばめてもあの頃へ還れない'
+const count = ref<number>(-1)
+const readyCount = ref<number>(0)
+const isReadyTime = ref<boolean>(false)
+const isRunning = ref<boolean>(false)
 
 const start = async () => {
-  if (isRunning.value) return;
+  if (isRunning.value) return
 
-  isRunning.value = true;
-  readyCount.value = 3;
-  isReadyTime.value = true;
-  
+  isRunning.value = true
+  readyCount.value = 3
+  isReadyTime.value = true
+
   // 開始前カウントダウン
   await new Promise<void>((resolve) => {
-    readyCount.value = 3;
+    readyCount.value = 3
     const readyTimer = setInterval(() => {
-      readyCount.value--;
+      readyCount.value--
       if (readyCount.value <= 0) {
-        clearInterval(readyTimer);
-        resolve();
+        clearInterval(readyTimer)
+        resolve()
       }
-    }, 1000);
+    }, 1000)
   })
-  isReadyTime.value = false;
+  isReadyTime.value = false
 
   // 文字を1文字ずつ表示する
   await new Promise<void>((resolve) => {
     const timerId = setInterval(() => {
-      count.value++;
+      count.value++
       if (count.value >= str.length) {
-        clearInterval(timerId);
+        clearInterval(timerId)
         resolve()
       }
-    }, 50);
+    }, 30)
   })
 
-  isReadyTime.value = false;
-  isRunning.value = false;
-  count.value = -1;
+  isReadyTime.value = false
+  isRunning.value = false
+  count.value = -1
 }
 
 const reload = () => {
-  window.location.reload();
+  window.location.reload()
 }
-
 </script>
 
 <template>
@@ -61,14 +58,14 @@ const reload = () => {
     </div>
 
     <div class="flex gap-4 mt-8">
-      <button :disabled="!!timerId" class="bg-blue-500 disabled:bg-gray-400 text-white px-6 py-2 rounded-full font-bold shadow-md hover:bg-blue-600 active:scale-95 transition-all" @click="start">
+      <button :disabled="!!isRunning"
+        class="bg-blue-500 disabled:bg-gray-400 text-white px-6 py-2 rounded-full font-bold shadow-md hover:bg-blue-600 active:scale-95 disabled:active:scale-100 transition-all"
+        @click="start">
         START
       </button>
     </div>
     <div class="absolute bottom-20 w-full flex justify-center">
-      <button @click="reload">
-        RELOAD
-      </button>
+      <button @click="reload">RELOAD</button>
     </div>
   </div>
   <!-- <div>{{ debug }}</div> -->
