@@ -7,6 +7,8 @@ const route = useRoute();
 const clickBack = () => {
   history.back();
 }
+console.log({route})
+console.log({path:route.path})
 
 </script>
 
