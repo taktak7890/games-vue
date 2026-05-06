@@ -2,7 +2,7 @@
 import { onMounted, ref } from 'vue';
 
 const speed = ref<number>(10);
-const list = ref<{ lyrics: string, answer: string }[]>([]);
+const list = ref<{ lyrics: string, answer: string, genre: string }[]>([]);
 const isLoading = ref<boolean>(true);
 const isError = ref<boolean>(false);
 const isArrowShowAnswer = ref<boolean>(false);
@@ -16,10 +16,10 @@ onMounted(async () => {
   const cachedQuestions = sessionStorage.getItem(STORAGE_KEY_QUESTIONS);
   if (cachedSettings && cachedQuestions) {
     try {
-      const parsedQuestions: { lyrics: string, answer: string }[] = JSON.parse(cachedQuestions);
+      const parsedQuestions: { lyrics: string, answer: string, genre: string }[] = JSON.parse(cachedQuestions);
       const parsedSettings: { speed: number, isArrowShowAnswer: boolean } = JSON.parse(cachedSettings);
-      speed.value = parsedSettings.speed;
       list.value = parsedQuestions;
+      speed.value = parsedSettings.speed;
       isArrowShowAnswer.value = !!parsedSettings.isArrowShowAnswer;
       isLoading.value = false;
       return; // キャッシュがあればここで終了
@@ -70,9 +70,17 @@ const reload = () => {
       <span v-else-if="isError" class="text-red-300 text-center text-2xl">エラーが発生しました</span>
       <span v-else v-for="(item, index) in list" :key="index"
         class="text-blue-300 text-center text-2xl underline underline-offset-8">
-        <router-link
-          :to="{ name: `game1`, state: { speed: speed, title: '問題' + (index + 1), isArrowShowAnswer: isArrowShowAnswer, lyrics: item.lyrics, answer: item.answer } }">
-          問題{{ index + 1 }}
+        <router-link :to="{
+          name: `game1`, state: {
+            speed: speed,
+            title: '問題' + (index + 1),
+            isArrowShowAnswer: isArrowShowAnswer,
+            lyrics: item.lyrics,
+            answer: item.answer,
+            genre: item.genre,
+          }
+        }">
+          問題{{ index + 1 }} ({{ item.genre }})
         </router-link>
       </span>
     </nav>
