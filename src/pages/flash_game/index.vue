@@ -31,7 +31,7 @@ onMounted(async () => {
   // 2. キャッシュがない場合のみ fetch を実行
   try {
     isLoading.value = true;
-    const params = new URLSearchParams({ type: 'settings' });
+    const params = new URLSearchParams({});
     const response = await fetch(`${import.meta.env.VITE_FLASH_GAS_URL}?${params}`);
     const data = await response.json();
 
@@ -64,8 +64,8 @@ const reload = () => {
 
 
 <template>
-  <div class="w-full h-full">
-    <nav class="flex flex-col gap-1">
+  <div class="w-full h-full flex flex-col">
+    <nav class="flex flex-1 flex-col gap-1 overflow-y-auto">
       <span v-if="isLoading" class="text-center text-2xl">読み込み中...</span>
       <span v-else-if="isError" class="text-red-300 text-center text-2xl">エラーが発生しました</span>
       <span v-else v-for="(item, index) in list" :key="index"
@@ -76,7 +76,7 @@ const reload = () => {
         </router-link>
       </span>
     </nav>
-    <div class="absolute bottom-20 w-full flex justify-center">
+    <div class="h-20 w-full flex justify-center">
       <button @click="reload">再読み込み</button>
     </div>
   </div>

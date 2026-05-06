@@ -23,7 +23,7 @@ const clickBack = () => {
         {{ getPathText(route.path) }}
       </div>
     </header>
-    <main class="relative flex-1">
+    <main class="relative flex-1 overflow-hidden">
       <nav v-if="route.path === '/'" class="flex flex-col gap-1">
         <span v-for="({ title, isShowHome }, path) in TEXT_PATH_MAP" :key="path"
           class="text-blue-300 text-center text-2xl underline underline-offset-8">
