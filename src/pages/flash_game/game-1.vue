@@ -4,11 +4,13 @@ import { ref } from 'vue';
 const state = window.history.state;
 const lyrics: string = state.lyrics;
 const answer: string = state.answer;
-const speed: number = state.speed;
+// const speed: number = state.speed;
 const isArrowShowAnswer: boolean = state.isArrowShowAnswer;
 const title: string = state.title;
 console.log(state)
 
+const speedList = [{ label: 'はやい', speed: 10 }, { label: 'ふつう', speed: 25 }, { label: 'ゆっくり', speed: 40 }] as const;
+const speed = ref<number>(speedList[0].speed);
 const count = ref<number>(-1);
 const readyCount = ref<number>(0);
 const isReadyTime = ref<boolean>(false);
@@ -50,7 +52,7 @@ const start = async () => {
         clearInterval(timerId);
         resolve();
       }
-    }, speed);
+    }, speed.value);
   });
 
   isReadyTime.value = false;
@@ -62,7 +64,14 @@ const start = async () => {
 <template>
   <div class="flex flex-col w-full h-full text-2xl gap-2 items-center">
     <div class="text-2xl font-bold">{{ title }}</div>
-    <div>speed: {{ speed }}</div>
+    <div>
+      スピード:
+      <select v-model="speed" class="text-black">
+        <option v-for="(item, index) in speedList" :value="item.speed" :key="index">
+          {{ item.label }}
+        </option>
+      </select>
+    </div>
     <div class="bg-amber-100 rounded-xl shadow-inner p-4">
       <div class="w-48 h-48 flex justify-center items-center text-9xl font-bold text-amber-800">
         <span v-if="isReadyTime" class="">{{ readyCount }}</span>
