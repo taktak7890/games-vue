@@ -71,7 +71,7 @@ const reload = () => {
       <span v-else v-for="(item, index) in list" :key="index"
         class="text-blue-300 text-center text-2xl underline underline-offset-8">
         <router-link
-          :to="{ name: `game1`, state: { speed: speed, isArrowShowAnswer: isArrowShowAnswer, lyrics: item.lyrics, answer: item.answer } }">
+          :to="{ name: `game1`, state: { speed: speed, title: '問題' + (index + 1), isArrowShowAnswer: isArrowShowAnswer, lyrics: item.lyrics, answer: item.answer } }">
           問題{{ index + 1 }}
         </router-link>
       </span>
