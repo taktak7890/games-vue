@@ -4,6 +4,7 @@ import { getPathText, TEXT_PATH_MAP } from './constants/text';
 
 const route = useRoute();
 
+const ver = import.meta.env.VERSION
 const clickBack = () => {
   history.back();
 };
@@ -17,6 +18,7 @@ const clickBack = () => {
           ←
         </button>
       </div>
+      <div v-else class="absolute top-0 left-0 h-full w-10">ver.{{ ver }}</div>
       <div class="flex justify-center flex-1 bg-yellow-300 text-3xl items-center">
         {{ getPathText(route.path) }}
       </div>

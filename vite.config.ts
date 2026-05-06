@@ -13,6 +13,9 @@ export default defineConfig({
     vueDevTools(),
     tailwindcss(),
   ],
+  define: {
+    'import.meta.env.VERSION': JSON.stringify(process.env.npm_package_version),
+  },
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))

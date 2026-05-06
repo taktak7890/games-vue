@@ -1,27 +1,25 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { ref } from 'vue';
 
-const str = ref<string>('');
-const speed = ref<number>(30);
+const state = window.history.state;
+const lyrics: string = state.lyrics;
+const answer: string = state.answer;
+const speed: number = state.speed;
+const isArrowShowAnswer: boolean = state.isArrowShowAnswer;
+console.log(state)
+
 const count = ref<number>(-1);
 const readyCount = ref<number>(0);
 const isReadyTime = ref<boolean>(false);
 const isRunning = ref<boolean>(false);
+const isShowAnswer = ref<boolean>(false);
 
-onMounted(async () => {
-  try {
-    const response = await fetch(
-      'https://script.google.com/macros/s/AKfycbzVp2mPajx2IMr1XAiQpPcg2tSia6ndADBG3uyTPZQpDQT6SEr7XqC4sBHIZvxYfOnLRA/exec'
-    );
-    const data = await response.json();
-
-    // スプレッドシートの値で上書き
-    str.value = data.text;
-    speed.value = Number(data.speed);
-  } catch (e) {
-    console.error(e);
+const clickShowAnswer = async () => {
+  if (!window.confirm('本当に答えを表示しますか？')) {
+    return;
   }
-});
+  isShowAnswer.value = true;
+}
 
 const start = async () => {
   if (isRunning.value) return;
@@ -47,20 +45,16 @@ const start = async () => {
   await new Promise<void>((resolve) => {
     const timerId = setInterval(() => {
       count.value++;
-      if (count.value >= str.value.length) {
+      if (count.value >= lyrics.length) {
         clearInterval(timerId);
         resolve();
       }
-    }, speed.value);
+    }, speed);
   });
 
   isReadyTime.value = false;
   isRunning.value = false;
   count.value = -1;
-};
-
-const reload = () => {
-  window.location.reload();
 };
 </script>
 
@@ -70,15 +64,15 @@ const reload = () => {
     <div class="bg-amber-100 rounded-xl shadow-inner p-4">
       <div class="w-48 h-48 flex justify-center items-center text-9xl font-bold text-amber-800">
         <span v-if="isReadyTime" class="">{{ readyCount }}</span>
-        <span v-else-if="count >= 0">{{ str.slice(count, count + 1) }}</span>
+        <span v-else-if="count >= 0">{{ lyrics.slice(count, count + 1) }}</span>
       </div>
     </div>
 
     <div class="flex gap-4 mt-8">
-      <button :disabled="!!isRunning || str === ''"
+      <button :disabled="isRunning"
         class="bg-blue-500 disabled:bg-gray-400 text-white px-6 py-2 rounded-full font-bold shadow-md hover:bg-blue-600 active:scale-95 disabled:active:scale-100 transition-all"
         @click="start">
-        {{ str === "" ? "読み込み中" : "START" }}
+        START
       </button>
     </div>
     <div class="p-2 flex flex-col">
@@ -87,8 +81,13 @@ const reload = () => {
         <span>STARTを押すと歌詞が一文字ずつ高速で出るぞ！何の歌か当てよう！</span>
       </div>
     </div>
-    <div class="absolute bottom-20 w-full flex justify-center">
-      <button @click="reload">RELOAD</button>
+    <div v-if="isArrowShowAnswer">
+      <div class="flex justify-center">
+        <button class="bg-green-500 text-[16px] p-1 text-white font-bold" @click="clickShowAnswer">
+          答えを見る
+        </button>
+      </div>
+      <div v-if="isShowAnswer">{{ answer }}</div>
     </div>
   </div>
 </template>

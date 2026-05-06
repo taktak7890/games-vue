@@ -9,9 +9,14 @@ const router = createRouter({
       component: () => import('../pages/page-1.vue'),
     },
     {
+      path: '/page1/game-index',
+      name: 'game-index',
+      component: () => import('../pages/flash_game/index.vue'),
+    },
+    {
       path: '/page1/game1',
       name: 'game1',
-      component: () => import('../pages/game-1.vue'),
+      component: () => import('../pages/flash_game/game-1.vue'),
     },
     {
       path: '/setting',
