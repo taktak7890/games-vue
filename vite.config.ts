@@ -12,6 +12,7 @@ export default defineConfig({
     vue(),
     vueDevTools(),
     tailwindcss(),
+
   ],
   define: {
     'import.meta.env.VERSION': JSON.stringify(process.env.npm_package_version),

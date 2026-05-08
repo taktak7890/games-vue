@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import type { GameState } from './types';
 
-const state = window.history.state;
+const state = window.history.state as GameState;
 const lyrics: string = state.lyrics;
 const answer: string = state.answer;
-// const speed: number = state.speed;
 const isArrowShowAnswer: boolean = state.isArrowShowAnswer;
 const title: string = state.title;
-console.log(state)
+const genre: string = state.genre;
 
 const speedList = [{ label: 'はやい', speed: 10 }, { label: 'ふつう', speed: 25 }, { label: 'ゆっくり', speed: 40 }] as const;
 const speed = ref<number>(speedList[0].speed);
@@ -63,7 +63,7 @@ const start = async () => {
 
 <template>
   <div class="flex flex-col w-full h-full text-2xl gap-2 items-center">
-    <div class="text-2xl font-bold">{{ title }}</div>
+    <div class="text-2xl font-bold">{{ genre }} - {{ title }}</div>
     <div>
       スピード:
       <select v-model="speed" class="text-black">

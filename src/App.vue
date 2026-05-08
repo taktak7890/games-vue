@@ -1,7 +1,9 @@
 <script setup lang="ts">
+import { ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { getPathText, TEXT_PATH_MAP } from './constants/text';
 
+const activeIndex = ref('1');
 const route = useRoute();
 
 const ver = import.meta.env.VERSION

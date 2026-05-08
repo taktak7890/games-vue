@@ -1,8 +1,12 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
+import type { Question } from './types';
+import QuestionList from './QuestionList.vue';
+
+const tab = ref('one')
 
 const speed = ref<number>(10);
-const list = ref<{ lyrics: string, answer: string, genre: string }[]>([]);
+const list = ref<Question[]>([]);
 const isLoading = ref<boolean>(true);
 const isError = ref<boolean>(false);
 const isArrowShowAnswer = ref<boolean>(false);
@@ -16,7 +20,7 @@ onMounted(async () => {
   const cachedQuestions = sessionStorage.getItem(STORAGE_KEY_QUESTIONS);
   if (cachedSettings && cachedQuestions) {
     try {
-      const parsedQuestions: { lyrics: string, answer: string, genre: string }[] = JSON.parse(cachedQuestions);
+      const parsedQuestions: Question[] = JSON.parse(cachedQuestions);
       const parsedSettings: { speed: number, isArrowShowAnswer: boolean } = JSON.parse(cachedSettings);
       list.value = parsedQuestions;
       speed.value = parsedSettings.speed;
@@ -62,30 +66,44 @@ const reload = () => {
 };
 </script>
 
-
 <template>
-  <div class="w-full h-full flex flex-col">
-    <nav class="flex flex-1 flex-col gap-1 overflow-y-auto">
-      <span v-if="isLoading" class="text-center text-2xl">読み込み中...</span>
-      <span v-else-if="isError" class="text-red-300 text-center text-2xl">エラーが発生しました</span>
-      <span v-else v-for="(item, index) in list" :key="index"
-        class="text-blue-300 text-center text-2xl underline underline-offset-8">
-        <router-link :to="{
-          name: `game1`, state: {
-            speed: speed,
-            title: '問題' + (index + 1),
-            isArrowShowAnswer: isArrowShowAnswer,
-            lyrics: item.lyrics,
-            answer: item.answer,
-            genre: item.genre,
-          }
-        }">
-          問題{{ index + 1 }} ({{ item.genre }})
-        </router-link>
-      </span>
-    </nav>
-    <div class="h-20 w-full flex justify-center">
-      <button @click="reload">再読み込み</button>
+  <div class="w-full h-full flex flex-col overflow-hidden">
+    <div class="w-full h-full flex flex-col overflow-hidden">
+      <div class="flex-none bg-white">
+        <v-tabs v-model="tab" color="primary">
+          <v-tab value="one">J-POP</v-tab>
+          <v-tab value="two">アニソン</v-tab>
+          <v-tab value="three">VOCALOID</v-tab>
+        </v-tabs>
+        <v-divider />
+      </div>
+      <div class="flex-1 min-h-0">
+        <v-tabs-window v-model="tab" class="h-full overflow-y-auto">
+          <v-tabs-window-item value="one">
+            <question-list v-if="!isLoading && !isError" :list="list.filter(item => item.genre === 'J-POP')"
+              :speed="speed" :is-arrow-show-answer="isArrowShowAnswer" />
+            <span v-else-if="isError" class="text-red-300 text-center text-2xl">エラーが発生しました</span>
+            <span v-else class="text-center text-2xl">読み込み中...</span>
+          </v-tabs-window-item>
+          <v-tabs-window-item value="two">
+            <question-list v-if="!isLoading && !isError" :list="list.filter(item => item.genre === 'アニソン')"
+              :speed="speed" :is-arrow-show-answer="isArrowShowAnswer" />
+            <span v-else-if="isError" class="text-red-300 text-center text-2xl">エラーが発生しました</span>
+            <span v-else class="text-center text-2xl">読み込み中...</span>
+          </v-tabs-window-item>
+          <v-tabs-window-item value="three">
+            <question-list v-if="!isLoading && !isError" :list="list.filter(item => item.genre === 'VOCALOID')"
+              :speed="speed" :is-arrow-show-answer="isArrowShowAnswer" />
+            <span v-else-if="isError" class="text-red-300 text-center text-2xl">エラーが発生しました</span>
+            <span v-else class="text-center text-2xl">読み込み中...</span>
+          </v-tabs-window-item>
+        </v-tabs-window>
+      </div>
+    </div>
+    <div class="h-20 w-full flex items-center justify-center bg-blue-200 flex-none border-t">
+      <button class="bg-white hover:bg-gray-100 px-8 py-2 rounded-full font-bold shadow-sm" @click="reload">
+        再読み込み
+      </button>
     </div>
   </div>
 </template>
