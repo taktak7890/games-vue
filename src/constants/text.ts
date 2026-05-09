@@ -3,10 +3,6 @@ export const TEXT_PATH_MAP = {
     title: 'Home',
     isShowHome: false,
   },
-  '/setting': {
-    title: '設定',
-    isShowHome: true,
-  },
   '/page1': {
     title: 'ゲームリスト',
     isShowHome: true,

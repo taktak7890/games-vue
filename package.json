@@ -1,6 +1,6 @@
 {
   "name": "vue-project",
-  "version": "0.1.4",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.2.4",
+    "pinia": "^3.0.4",
     "vue": "^3.5.32",
     "vue-router": "^5.0.4",
     "vuetify": "^4.0.6"

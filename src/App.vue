@@ -1,38 +1,47 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import { useRoute } from 'vue-router';
-import { getPathText, TEXT_PATH_MAP } from './constants/text';
+import { useRoute, useRouter } from 'vue-router';
+import { useHeaderTitleStore } from './stores/headerTitle';
+import { ref } from 'vue'
 
-const activeIndex = ref('1');
+const dialog = ref(false)
 const route = useRoute();
+const router = useRouter();
+const headerTitleStore = useHeaderTitleStore();
 
 const ver = import.meta.env.VERSION
 const clickBack = () => {
-  history.back();
+  if (route.name === 'flash-game') {
+    router.push({ name: 'flash-game-index' });
+  } else if (route.name === 'flash-game-index') {
+    router.push({ name: 'home' });
+  } else {
+    history.back();
+  }
 };
+
 </script>
 
 <template>
   <div class="flex flex-col h-screen">
-    <header class="flex relative h-10">
-      <div v-if="route.path !== '/'" class="absolute top-0 left-0 h-full w-10">
-        <button class="flex justify-center h-full w-full items-center bg-blue-300 font-bold text-xl" @click="clickBack">
-          ←
-        </button>
+    <v-toolbar color="secondary" density="compact" location="top end" rounded>
+      <v-btn :disabled="route.name === 'home'" icon="mdi-arrow-left" @click="clickBack" />
+      <div class="flex justify-center flex-1 text-3xl items-center">
+        {{ headerTitleStore.getTitle }}
       </div>
-      <div v-else class="absolute top-0 left-0 h-full w-10">ver.{{ ver }}</div>
-      <div class="flex justify-center flex-1 bg-yellow-300 text-3xl items-center">
-        {{ getPathText(route.path) }}
-      </div>
-    </header>
+      <v-btn @click="dialog = true" icon="mdi-information" />
+    </v-toolbar>
     <main class="relative flex-1 overflow-hidden">
-      <nav v-if="route.path === '/'" class="flex flex-col gap-1">
-        <span v-for="({ title, isShowHome }, path) in TEXT_PATH_MAP" :key="path"
-          class="text-blue-300 text-center text-2xl underline underline-offset-8">
-          <router-link :to="path" v-if="isShowHome">{{ title }}</router-link>
-        </span>
-      </nav>
       <router-view />
     </main>
+    <v-dialog v-model="dialog" width="90vw">
+      <v-card max-width="100vw">
+        <template v-slot:text>
+          <div class="text-2xl flex justify-center w-full">ver {{ ver }}</div>
+        </template>
+        <template v-slot:actions>
+          <v-btn class="ms-auto" text="閉じる" @click="dialog = false"></v-btn>
+        </template>
+      </v-card>
+    </v-dialog>
   </div>
 </template>

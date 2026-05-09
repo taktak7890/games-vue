@@ -1,21 +1,62 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import type { GameState } from './types';
+import { onMounted, ref, computed } from 'vue';
+import type { Question, Settings, SpeedList } from './types';
+import { useHeaderTitleStore } from '@/stores/headerTitle';
+import { useRoute } from 'vue-router';
 
-const state = window.history.state as GameState;
-const lyrics: string = state.lyrics;
-const answer: string = state.answer;
-const isArrowShowAnswer: boolean = state.isArrowShowAnswer;
-const title: string = state.title;
-const genre: string = state.genre;
+import { storageUtils } from '@/pages/flash_game/utils';
 
-const speedList = [{ label: 'はやい', speed: 10 }, { label: 'ふつう', speed: 25 }, { label: 'ゆっくり', speed: 40 }] as const;
-const speed = ref<number>(speedList[0].speed);
+const route = useRoute();
+const gameId: string = route.params.id as string;
+const headerTitleStore = useHeaderTitleStore();
+
+const isLoading = ref<boolean>(false);
+
+// データの取得と計算をリアクティブにする
+const settings = ref<Settings | null>(storageUtils.getSettings());
+const questions = ref<Question[]>(storageUtils.getQuestions());
+
+const speedList = computed((): SpeedList => {
+  const defaultList: SpeedList = [{ label: 'ふつう', speed: 100 }];
+  return settings.value?.speedList || defaultList;
+});
+const isArrowShowAnswer = computed((): boolean => settings.value?.isArrowShowAnswer || false);
+
+const targetGame = computed(() => questions.value.find((item) => item.number == gameId));
+const lyrics = computed(() => targetGame.value?.lyrics || '');
+const answer = computed(() => targetGame.value?.answer || '');
+const genre = computed(() => targetGame.value?.genre || '');
+
+const selectedSpeed = ref<SpeedList[0]>(speedList.value[0]!);
 const count = ref<number>(-1);
 const readyCount = ref<number>(0);
 const isReadyTime = ref<boolean>(false);
 const isRunning = ref<boolean>(false);
 const isShowAnswer = ref<boolean>(false);
+
+onMounted(async () => {
+  if (!storageUtils.hasFlashGameData()) {
+    try {
+      isLoading.value = true;
+      await storageUtils.fetchFlashGameData();
+      // 取得後に値を更新
+      settings.value = storageUtils.getSettings();
+      questions.value = storageUtils.getQuestions();
+    } catch (e) {
+      alert('データの取得に失敗しました');
+      console.error(e);
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  // 取得したデータがある場合、改めて最初のスピードを選択
+  if (settings.value?.speedList && settings.value.speedList.length > 0) {
+    selectedSpeed.value = settings.value.speedList[0]!;
+  }
+
+  headerTitleStore.setTitle(`${genre.value}-問題：${gameId}`);
+});
 
 const clickShowAnswer = async () => {
   if (!window.confirm('本当に答えを表示しますか？')) {
@@ -48,11 +89,11 @@ const start = async () => {
   await new Promise<void>((resolve) => {
     const timerId = setInterval(() => {
       count.value++;
-      if (count.value >= lyrics.length) {
+      if (count.value >= lyrics.value.length) {
         clearInterval(timerId);
         resolve();
       }
-    }, speed.value);
+    }, selectedSpeed.value.speed);
   });
 
   isReadyTime.value = false;
@@ -62,12 +103,14 @@ const start = async () => {
 </script>
 
 <template>
-  <div class="flex flex-col w-full h-full text-2xl gap-2 items-center">
-    <div class="text-2xl font-bold">{{ genre }} - {{ title }}</div>
+  <div v-if="isLoading" class="flex items-center justify-center h-full">
+    <div class="text-2xl font-bold text-gray-500">データを読み込み中...</div>
+  </div>
+  <div v-else class="flex flex-col w-full h-full text-2xl gap-2 items-center">
     <div>
       スピード:
-      <select v-model="speed" class="text-black">
-        <option v-for="(item, index) in speedList" :value="item.speed" :key="index">
+      <select v-model="selectedSpeed" class="text-black">
+        <option v-for="(item, index) in speedList" :value="item" :key="index">
           {{ item.label }}
         </option>
       </select>
