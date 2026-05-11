@@ -5,13 +5,13 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: () => import('../pages/Home.vue'),
+      name: 'top-page',
+      component: () => import('../pages/TopPage.vue'),
     },
     {
       path: '/flash-game-index',
       name: 'flash-game-index',
-      component: () => import('../pages/flash_game/Index.vue'),
+      component: () => import('../pages/flash_game/QuestionList.vue'),
     },
     {
       path: '/flash-game/:id',

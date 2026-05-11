@@ -13,7 +13,7 @@ const clickBack = () => {
   if (route.name === 'flash-game') {
     router.push({ name: 'flash-game-index' });
   } else if (route.name === 'flash-game-index') {
-    router.push({ name: 'home' });
+    router.push({ name: 'top-page' });
   } else {
     history.back();
   }
@@ -24,7 +24,7 @@ const clickBack = () => {
 <template>
   <div class="flex flex-col h-screen">
     <v-toolbar color="secondary" density="compact" location="top end" rounded>
-      <v-btn :disabled="route.name === 'home'" icon="mdi-arrow-left" @click="clickBack" />
+      <v-btn :disabled="route.name === 'top-page'" icon="mdi-arrow-left" @click="clickBack" />
       <div class="flex justify-center flex-1 text-3xl items-center">
         {{ headerTitleStore.getTitle }}
       </div>

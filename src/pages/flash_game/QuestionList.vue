@@ -1,41 +1,77 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { onMounted, ref } from 'vue';
+import QuestionList from './QuestionList.vue';
 import { storageUtils } from '@/pages/flash_game/utils';
+import { useHeaderTitleStore } from '@/stores/headerTitle';
 
-// プロパティの定義
-const props = defineProps<{
-  filterGenre: string;
-  isLoading: boolean;
-  isError: boolean;
-}>();
+const headerTitleStore = useHeaderTitleStore();
 
-const filteredData = computed(() => {
-  // props.isLoadingを参照することで、データ取得完了時に再評価を走らせる
-   
-  props.isLoading;
-  const questions = storageUtils.getQuestions();
-  return questions.filter((item) => item.genre === props.filterGenre);
+const tab = ref('one')
+
+const isLoading = ref<boolean>(true);
+const isError = ref<boolean>(false);
+
+const fetchGameData = async () => {
+  try {
+    isLoading.value = true;
+    await storageUtils.fetchFlashGameData();
+    isLoading.value = false;
+  } catch (e) {
+    alert('読み込みに失敗しました');
+    isError.value = true;
+    console.error(e);
+  } finally {
+    isLoading.value = false;
+  }
+}
+
+onMounted(async () => {
+  headerTitleStore.setTitle('歌詞一覧');
+  if (storageUtils.hasFlashGameData()) {
+    isLoading.value = false;
+    return;
+  }
+  await fetchGameData();
 });
+
+// リロード（キャッシュを消して再取得したい場合など）
+const reload = async () => {
+  storageUtils.removeSettings();
+  storageUtils.removeQuestions();
+  await fetchGameData();
+};
+
 </script>
 
 <template>
-  <nav class="flex flex-col gap-1 p-4">
-    <span v-for="(item, index) in filteredData" :key="index" class="text-center text-2xl">
-      <router-link :to="{
-        name: 'flash-game',
-        params: { id: item.number },
-        query: {
-          indexNo: String(index + 1)
-        }
-      }" class="text-blue-300 underline underline-offset-8 visited:text-purple-400">
-        問題{{ index + 1 }}
-      </router-link>
-    </span>
-    <div v-if="isLoading" class="text-center text-gray-500 mt-4">
-      読み込み中...
+  <div class="w-full h-full flex flex-col overflow-hidden">
+    <div class="w-full h-full flex flex-col overflow-hidden">
+      <div class="flex-none bg-white">
+        <v-tabs v-model="tab" color="primary">
+          <v-tab value="one">J-POP</v-tab>
+          <v-tab value="two">アニソン</v-tab>
+          <v-tab value="three">VOCALOID</v-tab>
+        </v-tabs>
+        <v-divider />
+      </div>
+      <div class="flex-1 min-h-0">
+        <v-tabs-window v-model="tab" class="h-full overflow-y-auto">
+          <v-tabs-window-item value="one">
+            <question-list filter-genre="J-POP" :is-loading="isLoading" :is-error="isError" />
+          </v-tabs-window-item>
+          <v-tabs-window-item value="two">
+            <question-list filter-genre="アニソン" :is-loading="isLoading" :is-error="isError" />
+          </v-tabs-window-item>
+          <v-tabs-window-item value="three">
+            <question-list filter-genre="VOCALOID" :is-loading="isLoading" :is-error="isError" />
+          </v-tabs-window-item>
+        </v-tabs-window>
+      </div>
     </div>
-    <div v-if="isError" class="text-center text-gray-500 mt-4">
-      エラーが発生しました
+    <div class="h-20 w-full flex items-center justify-center bg-blue-200 flex-none border-t">
+      <button class="bg-white hover:bg-gray-100 px-8 py-2 rounded-full font-bold shadow-sm" @click="reload">
+        再読み込み
+      </button>
     </div>
-  </nav>
+  </div>
 </template>
