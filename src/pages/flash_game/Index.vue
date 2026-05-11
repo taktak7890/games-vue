@@ -2,7 +2,6 @@
 import { onMounted, ref } from 'vue';
 import QuestionList from './QuestionList.vue';
 import { storageUtils } from '@/pages/flash_game/utils';
-import type { FlashGameResponse, Settings } from './types';
 import { useHeaderTitleStore } from '@/stores/headerTitle';
 
 const headerTitleStore = useHeaderTitleStore();

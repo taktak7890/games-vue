@@ -11,7 +11,7 @@ const props = defineProps<{
 
 const filteredData = computed(() => {
   // props.isLoadingを参照することで、データ取得完了時に再評価を走らせる
-  // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+   
   props.isLoading;
   const questions = storageUtils.getQuestions();
   return questions.filter((item) => item.genre === props.filterGenre);

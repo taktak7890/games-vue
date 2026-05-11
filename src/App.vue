@@ -31,7 +31,11 @@ const clickBack = () => {
       <v-btn @click="dialog = true" icon="mdi-information" />
     </v-toolbar>
     <main class="relative flex-1 overflow-hidden">
-      <router-view />
+      <router-view v-slot="{ Component }">
+        <keep-alive>
+          <component :is="Component" />
+        </keep-alive>
+      </router-view>
     </main>
     <v-dialog v-model="dialog" width="90vw">
       <v-card max-width="100vw">
