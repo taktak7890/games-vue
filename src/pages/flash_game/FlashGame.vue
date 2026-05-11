@@ -1,14 +1,12 @@
 <script setup lang="ts">
-import { onMounted, ref, computed } from 'vue';
+import { onMounted, ref, computed, onActivated } from 'vue';
 import type { Question, Settings, SpeedList } from './types';
 import { useHeaderTitleStore } from '@/stores/headerTitle';
 import { useRoute } from 'vue-router';
-
 import { storageUtils } from '@/pages/flash_game/utils';
 
 const route = useRoute();
 const gameId: string = route.params.id as string;
-const indexNo: string = route.query.indexNo as string;
 const headerTitleStore = useHeaderTitleStore();
 
 const isLoading = ref<boolean>(false);
@@ -35,6 +33,11 @@ const isReadyTime = ref<boolean>(false);
 const isRunning = ref<boolean>(false);
 const isShowAnswer = ref<boolean>(false);
 
+onActivated(async () => {
+  const indexNo: string = route.query.indexNo as string;
+  headerTitleStore.setTitle(`${genre.value} 問題-${indexNo}`);
+})
+
 onMounted(async () => {
   if (!storageUtils.hasFlashGameData()) {
     try {
@@ -55,8 +58,6 @@ onMounted(async () => {
   if (settings.value?.speedList && settings.value.speedList.length > 0) {
     selectedSpeed.value = settings.value.speedList[0]!;
   }
-
-  headerTitleStore.setTitle(`${genre.value} 問題-${indexNo}`);
 });
 
 const clickShowAnswer = async () => {

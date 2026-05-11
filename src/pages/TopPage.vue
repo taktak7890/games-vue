@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { onMounted } from 'vue';
+import { onActivated } from 'vue';
 import { useHeaderTitleStore } from '@/stores/headerTitle';
 
 const headerTitleStore = useHeaderTitleStore();
-onMounted(() => {
+
+onActivated(async () => {
   headerTitleStore.setTitle('HOME');
-});
+})
 </script>
 
 <template>

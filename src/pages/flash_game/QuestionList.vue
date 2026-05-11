@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
-import QuestionList from './QuestionList.vue';
+import { onActivated, onMounted, ref } from 'vue';
 import { storageUtils } from '@/pages/flash_game/utils';
 import { useHeaderTitleStore } from '@/stores/headerTitle';
+import QuestionLinks from './QuestionLinks.vue';
 
 const headerTitleStore = useHeaderTitleStore();
 
@@ -25,8 +25,11 @@ const fetchGameData = async () => {
   }
 }
 
-onMounted(async () => {
+onActivated(async () => {
   headerTitleStore.setTitle('歌詞一覧');
+})
+
+onMounted(async () => {
   if (storageUtils.hasFlashGameData()) {
     isLoading.value = false;
     return;
@@ -57,13 +60,13 @@ const reload = async () => {
       <div class="flex-1 min-h-0">
         <v-tabs-window v-model="tab" class="h-full overflow-y-auto">
           <v-tabs-window-item value="one">
-            <question-list filter-genre="J-POP" :is-loading="isLoading" :is-error="isError" />
+            <QuestionLinks filter-genre="J-POP" :is-loading="isLoading" :is-error="isError" />
           </v-tabs-window-item>
           <v-tabs-window-item value="two">
-            <question-list filter-genre="アニソン" :is-loading="isLoading" :is-error="isError" />
+            <QuestionLinks filter-genre="アニソン" :is-loading="isLoading" :is-error="isError" />
           </v-tabs-window-item>
           <v-tabs-window-item value="three">
-            <question-list filter-genre="VOCALOID" :is-loading="isLoading" :is-error="isError" />
+            <QuestionLinks filter-genre="VOCALOID" :is-loading="isLoading" :is-error="isError" />
           </v-tabs-window-item>
         </v-tabs-window>
       </div>
