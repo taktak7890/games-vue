@@ -8,6 +8,7 @@ import { storageUtils } from '@/pages/flash_game/utils';
 
 const route = useRoute();
 const gameId: string = route.params.id as string;
+const indexNo: string = route.query.indexNo as string;
 const headerTitleStore = useHeaderTitleStore();
 
 const isLoading = ref<boolean>(false);
@@ -55,7 +56,7 @@ onMounted(async () => {
     selectedSpeed.value = settings.value.speedList[0]!;
   }
 
-  headerTitleStore.setTitle(`${genre.value}-問題：${gameId}`);
+  headerTitleStore.setTitle(`${genre.value} 問題-${indexNo}`);
 });
 
 const clickShowAnswer = async () => {

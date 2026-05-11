@@ -20,12 +20,14 @@ const filteredData = computed(() => {
 
 <template>
   <nav class="flex flex-col gap-1 p-4">
-    <span v-for="(item, index) in filteredData" :key="index"
-      class="text-blue-300 text-center text-2xl underline underline-offset-8">
+    <span v-for="(item, index) in filteredData" :key="index" class="text-center text-2xl">
       <router-link :to="{
         name: 'flash-game',
-        params: { id: item.number }
-      }">
+        params: { id: item.number },
+        query: {
+          indexNo: String(index + 1)
+        }
+      }" class="text-blue-300 underline underline-offset-8 visited:text-purple-400">
         問題{{ index + 1 }}
       </router-link>
     </span>
